@@ -12,16 +12,15 @@ import java.util.List;
 
 public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder> {
     private List<Food> foodList;
-    private Context context;
 
-    public FoodAdapter(List<Food> foodList, Context context) {
+    public FoodAdapter(List<Food> foodList) {
         this.foodList = foodList;
-        this.context = context;
     }
 
     @Override
     public FoodViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_food, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_food, parent, false);
         return new FoodViewHolder(view);
     }
 
@@ -32,19 +31,13 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         holder.foodImageView.setImageResource(food.getImageResId());
 
         holder.itemView.setOnClickListener(v -> {
-            Food clickedFood = foodList.get(holder.getAdapterPosition()); // [cite: 77]
+            Food clickedFood = foodList.get(holder.getAdapterPosition());
+            Intent intent = new Intent(v.getContext(), DetailActivity.class);
 
-            // Tạo Intent để chuyển sang DetailActivity
-            Intent intent = new Intent(v.getContext(), DetailActivity.class); // [cite: 78]
+            // Gửi toàn bộ đối tượng Food bằng Parcelable
+            intent.putExtra("foodItem", clickedFood);
 
-            // Đóng gói dữ liệu vào Intent
-            intent.putExtra("foodName", clickedFood.getName()); // [cite: 78]
-            intent.putExtra("foodImage", clickedFood.getImageResId()); // [cite: 79]
-            intent.putExtra("foodDescription", clickedFood.getDescription()); // [cite: 80]
-            intent.putExtra("foodPrice", clickedFood.getPrice()); // [cite: 81]
-
-            // Bắt đầu Activity mới
-            v.getContext().startActivity(intent); // [cite: 82]
+            v.getContext().startActivity(intent);
         });
     }
 
